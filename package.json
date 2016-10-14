@@ -20,6 +20,12 @@
     "testEnvironment": "node"
   },
   "standard": {
-    "globals": ["test", "expect"]
+    "globals": [
+      "test",
+      "expect"
+    ]
+  },
+  "dependencies": {
+    "grpc": "^1.0.1-pre1"
   }
 }
