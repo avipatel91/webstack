@@ -1,0 +1,72 @@
+gRPC
+====
+
+- Start here: http://www.grpc.io/docs/guides/
+  - Can use protocol buffers (proto) as IDL and message interchange format
+  - Client can directly call methods on a server application (on different machine) as if it was a local object
+  - Idea:
+    - Definer a service
+    - specify the methods that can be called with params and return types
+    - Server: Implement this interface and run a gRPC server to handle client calls
+    - Client: Has a stub (or just client) that provides the same methods as the server
+    - Variety of language support without much work
+  - Working with protocol buffers
+    - gRPC uses them by default
+    - Google's mature open source mechanism for serializing structured data (can be used with JSON)
+    - define the structure for data you want to serialize, in a proto file
+    - structured as a message, each of which is a logical record of info
+    - contains name-value pairs called fields
+    - use protocol buffer compiler `protoc` to generate data access classes in preferred language
+    - define gRPC services in ordinary proto files
+    - with grpc plugin everything is done or you on client and server side both
+    - uses latest version of protocol buffers called proto3
+
+- gRPC basics - Node.js
+  - learn how to
+    - define a service in a .proto files
+    - use Node.js gRPC API to write a simple client and server for your service
+  - Why use gRPC
+    - simple route mapping application that lets client get information about features on their route
+    - create a summary of their route
+    - exchange route information such as traffic updates with server and other clients
+    - define service once in .proto file
+    - implement clients and servers in any of gRPC's supported languages
+    - run anywhere
+    - all complexity of communication between languages and environments is handled by gRPC
+    - efficient serialization, simple IDL, easy interface updating
+  - Example code and setup
+    - https://github.com/grpc/grpc/tree/v1.0.0/examples/node/dynamic_codegen/route_guide: dynamically generates code at runtime
+    - https://github.com/grpc/grpc/tree/v1.0.0/examples/node/static_codegen/route_guide: statically generated using `protoc` compiler
+  - Defining the service
+    - define gRPC service and method request and response types using proto
+    - define a service by giving it a name
+    - 4 different types of RPC methods
+      - simple RPC
+        - sends a request to server using stub
+        - wait for response
+        - emulates normal function call
+      - server-side streaming RPC
+        - client sends a request to server and gets a stream to read a sequence of messages back
+        - client reads from the returned stream until no more messages
+        - place stream keyword before response type
+      - client-side streaming RPC
+        - client writes a sequence of messages and sends them to server, using a provided stream
+        - once client has finished writing the messages, it waits for server to read them all and return its response
+        - place stream keyword before request type
+      - bidirectional streaming RPC
+        - both sides send a sequence of messages using a read-write stream
+        - both streams operate independently, so clients and servers can read and write in whatever order then like
+        - order of messages in each stream is preserved
+        - place stream before both the request and response
+    - proto file also contains buffer message type definitions for all the request and response types
+  - Loading service descriptors from proto files
+    - require gRPC library
+    - use its `load()` method
+  - Creating the server
+    - two parts
+      - implement the service interface generated from our service definition
+        - doing the actual work of our service
+      - run a gRPC server to listen for requests from clients and return service responses
+  - creating the client`
+    - all service methods are asynchronous
+      - use either events or callbacks to retrieve results
