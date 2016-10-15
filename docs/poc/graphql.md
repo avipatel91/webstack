@@ -1,0 +1,174 @@
+GraphQL
+=======
+
+- Introduction
+  - query language for API
+  - server-side runtime for executing queries using a types system for data definition
+  - not tied to database or storage engine
+  - backed by existing code and data
+  - creation:
+    - define types and fields on those types
+    - provide functions for each field on each type
+    - graphql service can validate and execute queries
+    - query is first checked to ensure it only refers to types and fields defined
+    - then runs the provided functions to produce result
+- Queries and Mutations
+  - Fields
+    - At simplest, GraphQL is about asking for a specific fields on objects
+    - same shape of result as query
+    - always get back what was expected
+    - server knows exactly what client is asking for
+    - queries can have comments
+    - fields can also refer to Objects
+      - in that case you can make sub-selection of fields for that object
+      - allows to fetch lot of data in single request rather than making several roundtrips
+  - Arguments
+    - ability to pass arguments to fields
+    - rest: single set of arguments (query params and url segments)
+    - graphql: every field and nested object can get its own set of arguments
+    - pass arguments into scalar fields, to implement data transformation on server
+    - server can declare its own types as long as they can be serialized into transport format
+  - Aliases
+    - since result object fields march name of field in the query but don't include arguments, you can't directly query for the same field with different arguments
+    - Use aliases to rename the result of a field to anything you want
+  - Fragments
+    - are reusable units construct a set of fields and then include them in queries where you need to reuse
+    - used to split complicated application data requirements into smaller chunks
+  - Variables
+    - enables to pass dynamic arguments inside the query string
+    - how:
+      - replace static value in query with $variableName
+      - declare $variableName as one of the variables accepted by the query
+      - pass `variableName: value` in separate, transport-specific variables dictionary
+    - in client code simply pass a different variable rather than need to construct an entirely new query
+    - dynamic queries are formed without string interpolation of user supplied values
+    - variable definition:
+      - list all variables prefixed by `$` followed by their type
+      - all declared variables must be either scalars, enums or input object types
+      - variable definitions can be optional or required
+        - add `!` for optional
+        - but if the field requires a non-null args, variable has to be required
+  - Operation name
+    - a query can have an operation name so that code is less ambiguous
+    - these are just like function names
+  - Directives
+    - can be attached to a field or fragment inclusion, and can affect execution of the query in any way the server desires
+    - two variables
+      - @include(if: Boolean): only include this field in the result if argument is `true`
+      - @skip(if: Boolean): Skip this field if the argument is `true`
+  - Mutations
+    - used for modification of server-side data as well
+    - in REST: by convention GET is not used for data modification
+    - if the mutation field returns an object type, you can ask for nested fields
+    - mutation and query can happen in the same query
+    - variables can also be a special kind of object type: `input object type`
+    - multiple fields in mutations
+      - can contain multiple fields, just like query
+      - while query fields are executed in parallel, mutation fields run in series, one after the other
+      - if two increments happen, the order will be maintained and no race conditions will arise
+  - Inline Fragments
+    - ability to define interfaces and union types
+    - if a field returns an interface or a union type, you need to use inline fragments to access data on underlying concrete type
+    - to ask for a field on the concrete type, you need to use an inline fragment with a type condition.
+    - Named fragments can also be used in the same way, since a named fragment always has a type attached
+    - meta fields
+      - there are some situation when you don't know the type you will get back from graphql service, you need a way to determine how to handle that data on the client
+      - you can request `__typename`, a meta field, at any point in query to get the name of the object type at that point
+- Schema and Types
+  - you can easily predict what form the result will be in, but its also useful to have an exact description of the data we can ask for
+    - what fields can we select
+    - what kind of objects might they return
+    - what fields are available on those sub objects
+  - Type language: GraphQL Schema language allows to talk about GraphQL schema in a language agnostic way
+  - Object types and fields
+    - most basic components are object types
+    - Objects have fields which can be built-in scalar type or other objects
+    - a postfixed `!` means field is non-nullable
+    - a non-nullable array should return with zero or more items
+  - Arguments
+    - every field on GraphQL object type can have zero or more arguments
+    - all arguments are named and passed thus
+    - can be either required or optional, in case of optional a default value should be pre-set
+    - query and mutation types
+      - two special types in a schema
+        - query
+        - mutation
+      - every GraphQL service has a query type and may or may not have a mutation type
+      - same as regular object types but special cause they define the entry point of every GraphQL query
+      - define fields on mutation type
+      - are available as root mutation fields you can call in your query
+    - scalar types
+      - each field has to resolve to some concrete data
+      - represent leaves of the query
+      - following types
+        - Int: a signed 32-bit integer
+        - Float: A signed double-precision floating-point value
+        - String: A UTF-8 character sequence
+        - Boolean: true or false
+        - ID: unique identifier, often used to refetch an object or as the key for a cache. Serialization is similar to string but by defining it as ID signifies that its not meant to be human readable.
+      - custom scalar types can also be declared
+        - up to implementation to define how that type should be serialized, deserialized and validated
+      - enumeration types
+        - also called enums
+        - restricted to a particular set of allowed values
+          - validate that any arguments of this type are one of the allowed values
+          - communicate through the type system that a field will always be one of a finite set of values
+          - details of enum implementation don't leak out to client even in languages with no enum support
+      - lists and non-null
+        - Object types, scalars and enums are the only kind of types you can define in GraphQL
+        - still you can apply type modifiers to affect validation of those values
+          - example: String! : string type not null
+          - example: [String]! : an array(list) of string not null
+        - not-null type modifier can also be used while defining arguments for a field, which will cause the GraphQL server to return a validation error if a null value is passed as that argument, whether in GraphQL string or in variables
+        - lists work in similar ways
+          - [String!]: will throw an error iff one of the values in list is of type null
+      - Interfaces
+        - supports interfaces
+        - abstract type that includes a certain set of fields that a type must include to implement the interface
+        - to ask for a field on a specific object type (such as fragments) you need to use an inline fragment
+      - Union Types
+        - Similar to interfaces, but don't get to specify any common fields between the types
+        - members of a union type need to be a concrete object types, can't create them out of interfaces or other unions
+      - Input types
+        - easily pass complex objects
+        - useful in case of Mutations
+        - have a special keyword `input` rather than type
+        - fields of an input object type can themselves refer to input object types, but you can't mix input and output types in your schema
+        - They also can't have arguments on their fields
+- Validation
+  - by using the type system, it can be predetermined whether GraphQL query is valid or not
+  - allows for effectively inform developers when an invalid query has been created without having to rely on runtime checks
+  - a fragment cannot refer to itself or create a cycle, as it could result in an unbounded result.
+  - if a field is not present in the object being queried upon, it results in an invalid query
+  - there are multiple such validation rules placed to ensure that a GraphQL query is semantically meaningful.
+- Execution
+  - Occurs after validation
+  - think of each field in a GraphQL query as a function or method of the previous type which returns the next type. In fact, this is exactly how GraphQL works.
+  - Each field on each type is backed by a function called resolver which is provided by server developer
+  - for each field executed, the corresponding resolver is called to produce the next value
+  - if the result is scalar, execution has completed
+  - else if its an object, it continues until scalar values are reached.
+  - always end at scalar values
+  - root fields and resolvers
+    - top level of server is a type that represents all possible entry points into the API, often called Root Type or the query type.
+  - asynchronous resolvers
+    - for functions which occur asynchronously, query will wait for Promise to complete before continuing and will do so with optimal concurrency
+  - Trivial resolvers
+    - a resolver can be used to resolve what happens after a field value is returned.
+  - Scalar coercion
+    - Used to return Enums defined on the server side of a GraphQL type system.
+  - List resolvers
+    - Depending upon the type of field in a list, i can return the data.
+    - If its Promises then it will wait for all the Promises before continuing
+  - Producing the result
+    - As each field is resolved, the resulting value is placed into key-value map with the field name as the key and resolved value as the value
+    - continues from bottom leaf fields of the query all the way back up to original field on the root Query Type
+    - collectively this produces the result which mirrors the original query and can be sent back
+- Introspection
+  - useful to ask GraphQL schema for information about what queries it supports
+  - `__schema` field is available as a root type of a Query
+  - Querying for that will result in following types:
+    - user defined types
+    - built-in scalars provided by type system
+    - __Schema, __Type, __TypeKind, __Field, __InputValue, __EnumValue, __Directive - variables of Introspection system
+    - you can introspect an introspection system itself
