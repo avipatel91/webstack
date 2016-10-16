@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "standard": "standard"
+    "codequality": "standard",
+    "server": "node app/server",
+    "client": "node app/client"
   },
   "author": "Vikram Tiwari <vikramtheone1@gmail.com> (http://vikramtiwari.com)",
   "license": "MIT",
@@ -23,6 +25,9 @@
     "globals": [
       "test",
       "expect"
+    ],
+    "ignore":[
+      "**/poc/"
     ]
   },
   "dependencies": {
