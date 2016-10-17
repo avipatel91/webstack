@@ -1,5 +1,6 @@
 'use strict'
 
 module.exports = {
-  echo: require('./echo')
+  echo: require('./echo'),
+  users: require('./users')
 }

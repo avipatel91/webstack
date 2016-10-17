@@ -13,7 +13,8 @@ nconf
     'PORT',
     'DB_URI',
     'EMAIL_API_KEY',
-    'EMAIL_FROM'
+    'EMAIL_FROM',
+    'JWT_KEY'
   ])
   // 3. Config file
   .file({ file: path.join(__dirname, 'config.json') })
@@ -23,7 +24,8 @@ nconf
     PORT: 3000,
     DB_URI: 'mongodb://localhost/webstack',
     EMAIL_API_KEY: '',
-    EMAIL_FROM: ''
+    EMAIL_FROM: '',
+    JWT_KEY: 'WebStack'
   })
 
 // Check for required settings
@@ -37,3 +39,6 @@ function checkConfig (setting) {
 }
 checkConfig('PORT')
 checkConfig('DB_URI')
+checkConfig('EMAIL_API_KEY')
+checkConfig('EMAIL_FROM')
+checkConfig('JWT_KEY')
