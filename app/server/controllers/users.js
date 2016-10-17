@@ -1,7 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
-const User = require('../models/user')
+const User = require('../models').user
 const Bluebird = require('bluebird')
 const Errors = require('../errors')
 

@@ -1,7 +1,7 @@
 'use strict'
 
 const _ = require('lodash')
-const Echo = require('../models/echo')
+const Echo = require('../models').echo
 const queue = require('../jobs/client')
 
 exports.echo = function (req, res, next) {

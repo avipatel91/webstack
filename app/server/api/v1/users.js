@@ -1,29 +1,29 @@
 'use strict'
 
 const router = require('express').Router()
-const controller = require('../../controllers/users')
-const jwt = require('../../services/jwt')
+const users = require('../../controllers').users
+const jwt = require('../../services').jwt
 
 router.route('/login')
-  .post(controller.login)
+  .post(users.login)
 
 router.route('/')
-  .post(controller.signup)
+  .post(users.signup)
 
 router.route('/:id')
   .get(
     jwt.mw,
-    controller.ensureFound,
-    controller.ensureSameUser,
-    controller.get
+    users.ensureFound,
+    users.ensureSameUser,
+    users.get
   )
   .put(
     jwt.mw,
-    controller.ensureFound,
-    controller.ensureSameUser,
-    controller.update
+    users.ensureFound,
+    users.ensureSameUser,
+    users.update
   )
 
-router.param('id', controller.userId)
+router.param('id', users.userId)
 
 module.exports = router

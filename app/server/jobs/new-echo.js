@@ -2,9 +2,9 @@
 
 const _ = require('lodash')
 const Bluebird = require('bluebird')
-const Echo = require('../models/echo')
+const Echo = require('../models').echo
 const view = require('../views/emails/new-echo')
-const email = require('../services/email')
+const email = require('../services').email
 
 module.exports = function newEcho (params, callback) {
   const id = params._id
