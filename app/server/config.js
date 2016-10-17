@@ -11,7 +11,9 @@ nconf
   // 2. Environment variables
   .env([
     'PORT',
-    'DB_URI'
+    'DB_URI',
+    'EMAIL_API_KEY',
+    'EMAIL_FROM'
   ])
   // 3. Config file
   .file({ file: path.join(__dirname, 'config.json') })
@@ -19,7 +21,9 @@ nconf
   .defaults({
     // Port the HTTP server
     PORT: 3000,
-    DB_URI: 'mongodb://localhost/webstack'
+    DB_URI: 'mongodb://localhost/webstack',
+    EMAIL_API_KEY: '',
+    EMAIL_FROM: ''
   })
 
 // Check for required settings
