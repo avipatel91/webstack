@@ -25,4 +25,6 @@ app.get('/', (req, res) => {
   })
 })
 
+app.use('/api', require('./api'))
+
 module.exports = server
