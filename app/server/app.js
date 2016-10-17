@@ -4,6 +4,7 @@ const express = require('express')
 const compression = require('compression')
 const http = require('http')
 const cors = require('cors')
+const db = require('./db')
 
 const app = express()
 const server = http.Server(app)
