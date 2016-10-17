@@ -1,13 +1,8 @@
 'use strict'
 
 const router = require('express').Router()
+const controller = require('../../controllers/echo')
 
-router.route('/').get(function (req, res) {
-  res.send({
-    params: req.params,
-    query: req.query,
-    body: req.body
-  })
-})
+router.route('/').get(controller.echo)
 
 module.exports = router
