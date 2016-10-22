@@ -1,0 +1,36 @@
+service: default
+runtime: nodejs
+vm: true
+threadsafe: true
+api_version: 1
+
+skip_files:
+  - ^(.*/)?.*/node_modules/.*$
+
+resources:
+  cpu: 1
+  memory_gb: 2
+  disk_size_gb: 10
+
+health_check:
+  enable_health_check: True
+  check_interval_sec: 5
+  timeout_sec: 4
+  unhealthy_threshold: 2
+  healthy_threshold: 2
+  restart_threshold: 60
+
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 2
+  cool_down_period_sec: 120
+  cpu_utilization:
+    target_utilization: 0.7
+
+handlers:
+- url: /.*
+  script: IGNORED
+  secure: always
+
+env_variables:
+  NODE_ENV: 'production'
