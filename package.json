@@ -9,7 +9,8 @@
     "start": "npm run server",
     "server": "node app/server/index",
     "worker": "node app/server/worker",
-    "deploy": "gcloud config set project ivikramtiwari && gcloud app deploy app.yaml --no-promote"
+    "deploy:gae": "gcloud config set project ivikramtiwari && gcloud app deploy app.yaml --no-promote",
+    "deploy:heroku": "git push heroku master"
   },
   "author": "Vikram Tiwari <vikramtheone1@gmail.com> (http://vikramtiwari.com)",
   "repository": {

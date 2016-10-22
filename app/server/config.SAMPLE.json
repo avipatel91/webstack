@@ -1,7 +1,0 @@
-{
-  "PORT": 3000,
-  "DB_URI": "mongodb://localhost/webstack",
-  "EMAIL_API_KEY": "",
-  "EMAIL_FROM": "",
-  "JWT_KEY": "WebStack"
-}

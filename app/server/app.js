@@ -6,6 +6,9 @@ const http = require('http')
 const cors = require('cors')
 const db = require('./db')
 
+db.on('error', console.error.bind(console, 'connection error:'))
+db.once('open', console.log.bind(console, 'connected to mongodb'))
+
 const app = express()
 const server = http.Server(app)
 const io = require('socket.io')(server)
