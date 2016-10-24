@@ -4,6 +4,7 @@ const _ = require('lodash')
 const User = require('../models').user
 const Bluebird = require('bluebird')
 const Errors = require('../errors')
+const ga = require('../services').ga
 
 exports.signup = function signup (req, res, next) {
   const data = req.body || {}
@@ -13,6 +14,7 @@ exports.signup = function signup (req, res, next) {
     .setPassword(data.password)
     .save()
     .then(function (_user) {
+      ga.trackEvent(user._id, 'user', 'signup', 'settings', user.email)
       res.send(_user.response)
     })
     .catch(next)
@@ -33,6 +35,7 @@ exports.login = function login (req, res, next) {
 
   Bluebird.join(user, isValid, function sendRes (_user, _isValid) {
     req.app.locals.io.emit('user login', {user: _.pick(_user, ['firstName', 'lastName', 'obfuscatedEmail'])})
+    ga.trackEvent(user._id, 'user', 'signup', 'settings', user.email)
     res.send(_user.response)
   })
   .catch(next)
@@ -80,6 +83,7 @@ exports.update = function update (req, res, next) {
   result
     .save()
     .then(function (user) {
+      ga.trackEvent(user._id, 'user', 'update', 'settings', user.email)
       res.send(user.response)
     })
     .catch(next)
