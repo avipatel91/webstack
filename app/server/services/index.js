@@ -2,5 +2,6 @@
 
 module.exports = {
   jwt: require('./jwt'),
-  email: require('./email')
+  email: require('./email'),
+  ga: require('./ga')
 }
