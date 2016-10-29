@@ -1,0 +1,25 @@
+{
+  "name": "react-quickstart",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2"
+  },
+  "babel": {
+    "presets": [
+      "latest",
+      "react"
+    ]
+  },
+  "devDependencies": {
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2"
+  },
+  "scripts": {
+    "start": "gulp"
+  }
+}

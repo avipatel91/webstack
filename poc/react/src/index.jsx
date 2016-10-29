@@ -1,3 +1,5 @@
+console.log('hello world!');
+
 class Square extends React.Component {
   render() {
     return (
